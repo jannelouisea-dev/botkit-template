@@ -2,11 +2,11 @@
 // Example of a conversation with a menu that loops until explicitly stopped
 //
 
-const { BotkitConversation } = require( 'botkit' );
+const { BotkitConversation } = require('botkit');
 
 module.exports = function (controller) {
 
-    const convo = new BotkitConversation( 'loop_chat', controller );
+    const convo = new BotkitConversation('loop_chat', controller);
 
     let question = 'Here are a few proposed DevNet activities:\n';
     question += '  1. Join a Community Of Interest: ( communities )\n';
@@ -14,38 +14,38 @@ module.exports = function (controller) {
     question += '  3. Check Upcoming Events: ( events )\n';
     question += 'What would you like to see?\n(type a number, a ( keyword) or "stop")';
 
-    convo.ask( question, [
+    convo.ask(question, [
         {
             pattern: '1|community|communities',
             handler: async (response, convo, bot) => {
-                return await convo.gotoThread( 'menu_1' );
+                return await convo.gotoThread('menu_1');
             }
         },
         {
             pattern: '2|lab|track|learn',
             handler: async (response, convo, bot) => {
-                return await convo.gotoThread( 'menu_2' );
+                return await convo.gotoThread('menu_2');
             }
         },
         {
             pattern: '3|event|express',
             handler: async (response, convo, bot) => {
-                return await convo.gotoThread( 'menu_3' );
+                return await convo.gotoThread('menu_3');
             }
         },
         {
             pattern: 'cancel|stop',
             handler: async (response, convo, bot) => {
-                return await convo.gotoThread( 'action_cancel' );
+                return await convo.gotoThread('action_cancel');
             }
         },
         {
             default: true,
             handler: async (response, convo, bot) => {
-                await bot.say( 'Unrecognized response...  \nTry again!' );
+                await bot.say('Unrecognized response...  \nTry again!');
                 return await convo.repeat();
             },
-        }  
+        }
     ]);
 
     // Menu option 1)
@@ -77,14 +77,14 @@ module.exports = function (controller) {
     }, 'action_cancel');
 
 
-    controller.addDialog( convo );
+    controller.addDialog(convo);
 
-    controller.hears( 'loop', 'message,direct_message', async ( bot, message ) => {
+    controller.hears('loop', 'message,direct_message', async (bot, message) => {
 
-        await bot.beginDialog( 'loop_chat' );
+        await bot.beginDialog('loop_chat');
     });
 
-    controller.commandHelp.push( { command: 'loop', text: 'Example of a conversation that loops until explicitly stopped' } );
+    //controller.commandHelp.push( { command: 'loop', text: 'Example of a conversation that loops until explicitly stopped' } );
 
 };
 

@@ -1,44 +1,44 @@
 //
 // Forces the user to pick among a predefined list of options
 //
-const { BotkitConversation } = require( 'botkit' );
+const { BotkitConversation } = require('botkit');
 
 module.exports = function (controller) {
 
-    const convo = new BotkitConversation( 'guess_chat', controller );
+    const convo = new BotkitConversation('guess_chat', controller);
 
-    convo.ask( 'Can you guess one of my favorite colors?', [
+    convo.ask('Can you guess one of my favorite colors?', [
         {
             pattern: '^blue|green|pink|red|yellow$',
-            handler: async ( response, convo ) => {
-                await convo.gotoThread( 'success' );
+            handler: async (response, convo) => {
+                await convo.gotoThread('success');
             }
         },
         {
             default: true,
-            handler: async ( response, convo ) => {
-                await convo.gotoThread( 'failure' )
+            handler: async (response, convo) => {
+                await convo.gotoThread('failure')
             }
         }
     ], 'guessedColor');
 
-    convo.addMessage( {
+    convo.addMessage({
         text: 'Wow!  You guessed right, {{ vars.guessedColor }} is one of my favorites',
         action: 'complete'
-    }, 'success' );
+    }, 'success');
 
-    convo.addMessage( {
+    convo.addMessage({
         text: 'Nope...',
         action: 'default'
-    }, 'failure' );
+    }, 'failure');
 
-    controller.addDialog( convo );
+    controller.addDialog(convo);
 
-    controller.hears( 'guess', 'message,direct_message', async (bot, message) => {
+    controller.hears('guess', 'message,direct_message', async (bot, message) => {
 
-        await bot.beginDialog( 'guess_chat' );
+        await bot.beginDialog('guess_chat');
     });
 
 
-    controller.commandHelp.push( { command: 'guess', text: 'Conversation example - guess from a restricted list of options' } );
+    //controller.commandHelp.push( { command: 'guess', text: 'Conversation example - guess from a restricted list of options' } );
 };

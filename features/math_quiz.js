@@ -3,31 +3,31 @@
 //
 //TODO: implement timeout mechanism for Botkit 4.5
 
-const { BotkitConversation } = require( 'botkit' );
+const { BotkitConversation } = require('botkit');
 
 module.exports = function (controller) {
 
-    const convo = new BotkitConversation( 'math_chat', controller );
+    const convo = new BotkitConversation('math_chat', controller);
 
-    convo.ask( 'Ready for a challenge? (yes/no/cancel)', [
+    convo.ask('Ready for a challenge? (yes/no/cancel)', [
         {
             pattern: 'yes|ya|yeah|sure|oui|si',
-            handler: async ( response, convo ) => {
+            handler: async (response, convo) => {
 
-                convo.gotoThread( 'quiz' );
+                convo.gotoThread('quiz');
             }
         },
         {
             pattern: 'no|neh|non|na|birk|cancel|stop|exit',
-            handler: async ( response, convo ) => {
+            handler: async (response, convo) => {
 
-                await convo.gotoThread( 'cancel' );
+                await convo.gotoThread('cancel');
             },
         },
         {
             default: true,
-            handler: async ( response, convo ) => {
-                await convo.gotoThread( 'bad_answer' );
+            handler: async (response, convo) => {
+                await convo.gotoThread('bad_answer');
             }
         }
     ]);
@@ -36,7 +36,7 @@ module.exports = function (controller) {
     convo.addMessage({
         text: 'Sorry, I did not understand...',
         action: 'default', // goes back to the thread's current state, where the question is not answered
-    }, 'bad_answer' );
+    }, 'bad_answer');
 
     // Thread: cancel
     convo.addMessage({
@@ -46,40 +46,41 @@ module.exports = function (controller) {
 
     // Thread: quiz
 
-    convo.addMessage( 'Let\'s go...', 'quiz' );
+    convo.addMessage('Let\'s go...', 'quiz');
 
     let challenge = pickChallenge();
 
-    convo.addQuestion( {
-        text: async ( template, vars ) => { 
-            
-            return `Question: ${ challenge.question }` }
-        },
+    convo.addQuestion({
+        text: async (template, vars) => {
+
+            return `Question: ${challenge.question}`
+        }
+    },
         [
             {
                 pattern: 'cancel|stop|exit',
-                handler: async ( response, convo ) => {
+                handler: async (response, convo) => {
 
-                    await convo.gotoThread( 'cancel' );
+                    await convo.gotoThread('cancel');
                 }
             },
             {
                 default: true,
                 handler: async (response, convo) => {
 
-                    if ( response == challenge.answer){
+                    if (response == challenge.answer) {
                         challenge = pickChallenge();
-                        await convo.gotoThread( 'success' )
+                        await convo.gotoThread('success')
                     }
                     else {
-                        await convo.gotoThread( 'wrong_answer' );
+                        await convo.gotoThread('wrong_answer');
                     }
                 }
             }
         ], {}, 'quiz');
 
     // Thread: quiz - success
-    convo.addMessage( 'Congrats, you did it!', 'success');
+    convo.addMessage('Congrats, you did it!', 'success');
 
     // Thread: quiz - missed
     // convo.addMessage( 'Time elapsed! you missed it, sorry.', 'missed' ); //TODO
@@ -90,22 +91,22 @@ module.exports = function (controller) {
         action: 'quiz', // goes back to the thread's current state, where the question is not answered
     }, 'wrong_answer');
 
-    controller.addDialog( convo );
+    controller.addDialog(convo);
 
     function pickChallenge() {
         var a = Math.round(Math.random() * 5) + 4;
         var b = Math.round(Math.random() * 5) + 4;
         return {
-            question:  `${ a } x ${ b } =`,
-            answer: `${ a*b }`
+            question: `${a} x ${b} =`,
+            answer: `${a * b}`
         }
     }
 
-    controller.hears( 'math', 'message,direct_message', async ( bot, message ) => {
+    controller.hears('math', 'message,direct_message', async (bot, message) => {
 
-        await bot.beginDialog( 'math_chat' );
+        await bot.beginDialog('math_chat');
     });
 
-    controller.commandHelp.push( { command: 'math', text: 'Conversation/thread example implementing a math quiz' } );
+    //controller.commandHelp.push( { command: 'math', text: 'Conversation/thread example implementing a math quiz' } );
 
 }
