@@ -1,8 +1,9 @@
 require('dotenv').config();
+
+
 const RALEIGH_LOCATION = process.env.RALEIGH_CLIMACELL_LOCATION_ID;
 
 const axios = require('axios');
-
 
 const instance = axios.create({
     baseURL: 'https://api.climacell.co/v3',
@@ -19,6 +20,25 @@ exports.getLocation = async () => {
         return resp.data;
     } catch (err) {
         console.log(err);
-        return {};
+    }
+}
+
+exports.getWeatherRealtime = async () => {
+    const params = {
+        'location_id': RALEIGH_LOCATION,
+        'unit_system': 'us',
+        'fields': [
+            'temp',
+            'feels_like',
+            'dewpoint',
+            'humidity'
+        ]
+    };
+
+    try {
+        const resp = await instance.get('/weather/realtime', { params: params });
+        return resp.data;
+    } catch (err) {
+        console.log(err);
     }
 }
