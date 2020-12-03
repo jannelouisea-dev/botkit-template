@@ -31,7 +31,8 @@ exports.getWeatherRealtime = async () => {
             'temp',
             'feels_like',
             'dewpoint',
-            'humidity'
+            'humidity',
+            'weather_code'
         ]
     };
 
