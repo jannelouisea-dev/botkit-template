@@ -1,18 +1,18 @@
 //
 // Weather information in Raleigh
 //
+
+const climacell = require('../api/climacell');
+
 module.exports = function (controller) {
+
     const command = 'weather';
 
     controller.hears(command, 'message,direct_message', async (bot, message) => {
 
-        /*
-        lt markDown = '```json\n';
-        markDown += JSON.stringify(controller.botCommons, null, 4);
-        markDown += '\n```'
-        */
+        const location = await climacell.getLocation();
 
-        await bot.reply(message, 'I will return weather information from climacell');
+        await bot.reply(message, `I will return weather information from climacell ${location.name}`);
     });
 
     controller.commandHelp.push({ command: command, text: 'Displays weather information' });
