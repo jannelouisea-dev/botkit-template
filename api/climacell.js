@@ -14,6 +14,15 @@ const instance = axios.create({
     },
 });
 
+exports.getLocations = async () => {
+    try {
+        const resp = await instance.get(`/locations`);
+        return resp.data;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 exports.getLocation = async () => {
     try {
         const resp = await instance.get(`/locations/${RALEIGH_LOCATION}`);
